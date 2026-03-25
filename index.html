@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Karte ziehen</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #1e1e2f, #3a3a6a);
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    .card {
+      width: 280px;
+      height: 180px;
+      perspective: 1000px;
+      cursor: pointer;
+      margin: auto;
+    }
+
+    .inner {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+
+    .flipped {
+      transform: rotateY(180deg);
+    }
+
+    .front, .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+      backface-visibility: hidden;
+    }
+
+    .front {
+      background: #111;
+      border: 2px solid #888;
+      font-size: 18px;
+    }
+
+    .back {
+      background: white;
+      color: black;
+      transform: rotateY(180deg);
+      font-size: 18px;
+    }
+
+    .disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .info {
+      margin-top: 20px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card" id="card">
+    <div class="inner" id="inner">
+      <div class="front">Klicke, um deine Karte zu ziehen 🎴</div>
+      <div class="back" id="result"></div>
+    </div>
+  </div>
+
+  <div class="info" id="info"></div>
+</div>
+
+<script>
+  const saetze = [
+    "Du bekommst heute eine Überraschung.",
+    "Jemand denkt gerade an dich.",
+    "Ein neuer Anfang steht bevor.",
+    "Vertraue deinem Bauchgefühl.",
+    "Du wirst bald gute Nachrichten hören.",
+    "Etwas Unerwartetes wird dich freuen."
+  ];
+
+  const card = document.getElementById("card");
+  const inner = document.getElementById("inner");
+  const result = document.getElementById("result");
+  const info = document.getElementById("info");
+
+  let schonGezogen = false;
+
+  const gespeichert = localStorage.getItem("gezogeneKarte");
+
+  if (gespeichert) {
+    result.textContent = gespeichert;
+    inner.classList.add("flipped");
+    card.classList.add("disabled");
+    info.textContent = "Du hast deine Karte bereits gezogen.";
+    schonGezogen = true;
+  }
+
+  card.addEventListener("click", () => {
+    if (schonGezogen) return;
+
+    const zufall = Math.floor(Math.random() * saetze.length);
+    const satz = saetze[zufall];
+
+    result.textContent = satz;
+    inner.classList.add("flipped");
+
+    localStorage.setItem("gezogeneKarte", satz);
+
+    info.textContent = "Das war deine Karte ✨ (nur einmal möglich)";
+
+    schonGezogen = true;
+    card.classList.add("disabled");
+  });
+</script>
+
+</body>
+</html>
